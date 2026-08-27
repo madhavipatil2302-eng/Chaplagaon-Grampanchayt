@@ -1,0 +1,77 @@
+      {selectedRoleMember && (
+        <div className="fixed inset-0 z-50 grid place-items-center bg-black/45 px-4 py-6" onClick={() => setExpandedRoleId('')}>
+          <article
+            className="max-h-[88vh] w-full max-w-2xl overflow-y-auto rounded-lg bg-white shadow-2xl"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="flex items-center justify-between border-b border-neutral-100 px-6 py-4">
+              <div>
+                <p className="text-xs font-black uppercase tracking-[0.18em] text-[#0b3b75]">Member Details</p>
+                <h3 className="mt-1 text-xl font-black text-[#0b3b75]">
+                  {selectedRoleMember.fullName || selectedRoleMember.name || 'Name not available'}
+                </h3>
+              </div>
+              <button
+                className="grid h-10 w-10 place-items-center rounded-md text-neutral-700 hover:bg-neutral-100"
+                onClick={() => setExpandedRoleId('')}
+                type="button"
+              >
+                <X size={22} />
+              </button>
+            </div>
+
+            <div className="grid gap-6 p-6 sm:grid-cols-[9rem_1fr]">
+              <div className="mx-auto grid h-32 w-32 place-items-center overflow-hidden rounded-full border border-[#0b3b75] bg-slate-50 p-1">
+                {selectedRoleMember.profilePhoto ? (
+                  <img
+                    alt={selectedRoleMember.fullName || selectedRoleMember.name || 'Team member'}
+                    className="h-full w-full rounded-full object-cover"
+                    src={resolveAssetUrl(selectedRoleMember.profilePhoto)}
+                  />
+                ) : (
+                  <Users className="h-11 w-11 text-slate-400" />
+                )}
+              </div>
+
+              <div className="space-y-4 text-sm font-semibold leading-6 text-neutral-700">
+                <p className="text-base font-black text-neutral-950">{selectedRoleMember.role || 'Role not available'}</p>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <p className="flex gap-2 rounded-md bg-neutral-50 p-3">
+                    <Mail className="mt-1 h-4 w-4 shrink-0 text-[#0b3b75]" />
+                    <span className="min-w-0 break-words">{selectedRoleMember.email || 'Email not available'}</span>
+                  </p>
+                  <p className="flex gap-2 rounded-md bg-neutral-50 p-3">
+                    <Phone className="mt-1 h-4 w-4 shrink-0 text-[#0b3b75]" />
+                    <span>{selectedRoleMember.mobileNumber || 'Contact not available'}</span>
+                  </p>
+                </div>
+                <p className="flex gap-2 rounded-md bg-neutral-50 p-3">
+                  <MapPin className="mt-1 h-4 w-4 shrink-0 text-[#0b3b75]" />
+                  <span>
+                    {selectedRoleMember.villageName
+                      ? `${selectedRoleMember.villageName}${selectedRoleMember.wardNumber ? `, Ward ${selectedRoleMember.wardNumber}` : ''}`
+                      : 'Location not set'}
+                  </span>
+                </p>
+                <p>
+                  <span className="font-black text-[#0b3b75]">Assigned Work: </span>
+                  {selectedRoleMember.responsibilities || 'Not assigned yet.'}
+                </p>
+                {selectedRoleMember.bio && (
+                  <p>
+                    <span className="font-black text-[#0b3b75]">Bio: </span>
+                    {selectedRoleMember.bio}
+                  </p>
+                )}
+                {Array.isArray(selectedRoleMember.priorityProjects) && selectedRoleMember.priorityProjects.length > 0 && (
+                  <div>
+                    <p className="font-black text-[#0b3b75]">Priority Projects</p>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {selectedRoleMember.priorityProjects.map((project) => (
+                        <span className="rounded-md bg-neutral-100 px-3 py-1 text-xs font-black text-neutral-700" key={project}>
+                          {project}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
