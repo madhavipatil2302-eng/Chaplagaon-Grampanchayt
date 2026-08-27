@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { AlertTriangle, MapPin, Phone, User, Calendar, ExternalLink, Image as ImageIcon } from "lucide-react";
+import { BASE_URL } from "../Services/apiConfig";
 
 function ViewEmergencyAlerts() {
     const [alerts, setAlerts] = useState([]);
@@ -8,7 +9,7 @@ function ViewEmergencyAlerts() {
     useEffect(() => {
         const fetchAlerts = async () => {
             try {
-                const response = await fetch("http://localhost:8000/api/get-all-emergency-alerts");
+                const response = await fetch(`${BASE_URL}/api/get-all-emergency-alerts`);
                 const result = await response.json();
                 if (response.ok && result.data) {
                     setAlerts(result.data);
