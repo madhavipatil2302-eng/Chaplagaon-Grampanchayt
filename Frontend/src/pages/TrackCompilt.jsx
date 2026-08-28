@@ -7,9 +7,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { TrackToken } from "../Services/TractokenServices.jsx";
-
-const envBaseUrl = import.meta.env.VITE_BACKEND_URL || import.meta.env.BACKEND_URL;
-const BASE_URL = envBaseUrl && !envBaseUrl.includes('5001') ? envBaseUrl : 'http://localhost:8000';
+import { resolveBackendAssetUrl } from "../Services/apiConfig.jsx";
 
 function TrackCompilt() {
     const [tokenId, setTokenId] = useState("");
@@ -169,7 +167,7 @@ function TrackCompilt() {
                                         <div className="aspect-[4/3] w-full overflow-hidden rounded-xl bg-slate-100">
                                             {tokenData.file ? (
                                                 <img 
-                                                    src={`${BASE_URL}/uploads/${tokenData.file}`} 
+                                                    src={resolveBackendAssetUrl(`/uploads/${tokenData.file}`)} 
                                                     alt="Complaint Proof" 
                                                     className="h-full w-full object-cover"
                                                 />

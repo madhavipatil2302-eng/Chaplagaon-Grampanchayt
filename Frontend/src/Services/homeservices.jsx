@@ -34,7 +34,7 @@ export function resolveAssetUrl(path) {
 
 export async function getAllRoleManagements() {
   try {
-    const response = await fetch(`${BASE_URL}/api/get-all-role-managements`)
+    const response = await fetch(`${BASE_URL}/get-all-role-managements`)
     const data = await response.json().catch(() => ({}))
 
     if (!response.ok || data?.success === false) {

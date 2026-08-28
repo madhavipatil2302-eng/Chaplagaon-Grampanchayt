@@ -4,13 +4,11 @@ import { ViewNotificationById } from "../Services/GetNotification";
 import { ArrowLeft, Calendar, Mail, Phone, User, Tag, FileText, CheckCircle, Clock, AlertCircle } from "lucide-react";
 import { jwtDecode } from "jwt-decode";
 import { UpdateStatusNotification } from "../Services/GetNotification";
+import { resolveBackendAssetUrl } from "../Services/apiConfig";
 // import { toast } from "react-toastify";
 
 
 function ViewNotification() {
-
-    const envBaseUrl = import.meta.env.VITE_BACKEND_URL || import.meta.env.BACKEND_URL
-    const BASE_URL = envBaseUrl && !envBaseUrl.includes('5001') ? envBaseUrl : 'http://localhost:8000'
 
     const { id } = useParams();
     const navigate = useNavigate();
@@ -131,7 +129,7 @@ function ViewNotification() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="flex items-center gap-3 p-4 bg-neutral-50 rounded-xl">
                             <div>
-                                <img src={`${BASE_URL}/uploads/${notification?.file}`} alt="" />
+                                {notification?.file && <img src={resolveBackendAssetUrl(`/uploads/${notification.file}`)} alt="" />}
 
                             </div>
                             <User className="text-emerald-700 shrink-0" size={22} />

@@ -32,11 +32,20 @@ export function resolveBackendAssetUrl(path) {
     const isLocalBackend = ['localhost', '127.0.0.1'].includes(url.hostname)
 
     if (isLocalBackend && url.pathname.startsWith('/uploads/')) {
-      return new URL(`${url.pathname}${url.search}`, `${BASE_URL}/`).toString()
+      if (BASE_URL.startsWith('http://') || BASE_URL.startsWith('https://')) {
+        const uploadBase = BASE_URL.replace(/\/api\/?$/, '')
+        return new URL(`${url.pathname}${url.search}`, uploadBase.endsWith('/') ? uploadBase : `${uploadBase}/`).toString()
+      }
+      return `${url.pathname}${url.search}`
     }
 
     return url.toString()
   } catch {
-    return new URL(path.replace(/^\/+/, ''), `${BASE_URL}/`).toString()
+    const normalizedPath = path.startsWith('/') ? path : `/${path}`
+    if (BASE_URL.startsWith('http://') || BASE_URL.startsWith('https://')) {
+      const uploadBase = BASE_URL.replace(/\/api\/?$/, '')
+      return `${uploadBase.replace(/\/+$/, '')}${normalizedPath}`
+    }
+    return normalizedPath
   }
 }

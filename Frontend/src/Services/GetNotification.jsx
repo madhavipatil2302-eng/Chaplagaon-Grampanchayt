@@ -1,12 +1,12 @@
 
-const envBaseUrl = import.meta.env.VITE_BACKEND_URL || import.meta.env.BACKEND_URL
-const BASE_URL = envBaseUrl && !envBaseUrl.includes('5001') ? envBaseUrl : 'http://localhost:8000'
+import { BASE_URL } from './apiConfig'
+
 export const GetAllNotification = async () => {
 
     const token = localStorage.getItem("accesstoken");
     try {
 
-        const Response = await fetch(`${BASE_URL}/api/get-all-notification-complints`, {
+        const Response = await fetch(`${BASE_URL}/get-all-notification-complints`, {
 
             method: "Get",
             headers: {
@@ -31,7 +31,7 @@ export const ViewNotificationById = async (id) => {
     const token = localStorage.getItem("accesstoken");
     try {
 
-        const Response = await fetch(`${BASE_URL}/api/get-notificationbyId/${id}`, {
+        const Response = await fetch(`${BASE_URL}/get-notificationbyId/${id}`, {
 
             method: "Get",
             headers: {
@@ -57,7 +57,7 @@ export const UpdateStatusNotification = async (id, status) => {
 
     try {
 
-        const response = await fetch(`${BASE_URL}/api/status/${id}`, {
+        const response = await fetch(`${BASE_URL}/status/${id}`, {
 
             method: "PATCH",
             headers: {

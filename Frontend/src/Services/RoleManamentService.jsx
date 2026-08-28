@@ -1,11 +1,10 @@
-const envBaseUrl = import.meta.env.VITE_BACKEND_URL || import.meta.env.BACKEND_URL;
-const BASE_URL = envBaseUrl && !envBaseUrl.includes('5001') ? envBaseUrl : 'http://localhost:8000';
+import { BASE_URL } from './apiConfig'
 
 export const ManageRole = async (roleData) => {
   try {
     const token = localStorage.getItem('accesstoken');
 
-    const response = await fetch(`${BASE_URL}/api/admin/manage-role`, {
+    const response = await fetch(`${BASE_URL}/admin/manage-role`, {
       method: 'POST',
       headers: token
         ? {

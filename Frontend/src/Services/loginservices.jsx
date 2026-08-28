@@ -1,5 +1,4 @@
-const envBaseUrl = import.meta.env.VITE_BACKEND_URL || import.meta.env.BACKEND_URL;
-const BASE_URL = envBaseUrl && !envBaseUrl.includes('5001') ? envBaseUrl : 'http://localhost:8000';
+import { BASE_URL } from './apiConfig'
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
@@ -16,7 +15,7 @@ export async function verifyAdminEmail(email) {
   }
 
   try {
-    const response = await fetch(`${BASE_URL}/api/admin/verify-email`, {
+    const response = await fetch(`${BASE_URL}/admin/verify-email`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -64,7 +63,7 @@ export async function adminLogin(email, password) {
   }
 
   try {
-    const response = await fetch(`${BASE_URL}/api/admin/login`, {
+    const response = await fetch(`${BASE_URL}/admin/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

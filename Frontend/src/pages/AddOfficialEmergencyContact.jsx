@@ -40,7 +40,7 @@ function AddOfficialEmergencyContact() {
                 submitData.append("file", file);
             }
 
-            const response = await fetch(`${BASE_URL}/api/official-emergency-contact`, {
+            const response = await fetch(`${BASE_URL}/official-emergency-contact`, {
                 method: "POST",
                 body: submitData,
             });

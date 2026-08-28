@@ -12,7 +12,7 @@ export function resolveProfileImage(path) {
 
 export async function getProfile() {
   try {
-    const response = await fetch(`${BASE_URL}/api/admin/profile`, {
+    const response = await fetch(`${BASE_URL}/admin/profile`, {
       headers: authHeaders(),
     })
     const data = await response.json().catch(() => ({}))
@@ -42,7 +42,7 @@ export async function getProfile() {
 
 export async function updateProfile(profileData) {
   try {
-    const response = await fetch(`${BASE_URL}/api/admin/profile`, {
+    const response = await fetch(`${BASE_URL}/admin/profile`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',

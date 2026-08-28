@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { AlertTriangle, MapPin, Phone, User, Calendar, ExternalLink, Image as ImageIcon } from "lucide-react";
-import { BASE_URL } from "../Services/apiConfig";
+import { BASE_URL, resolveBackendAssetUrl } from "../Services/apiConfig";
 
 function ViewEmergencyAlerts() {
     const [alerts, setAlerts] = useState([]);
@@ -9,7 +9,7 @@ function ViewEmergencyAlerts() {
     useEffect(() => {
         const fetchAlerts = async () => {
             try {
-                const response = await fetch(`${BASE_URL}/api/get-all-emergency-alerts`);
+                const response = await fetch(`${BASE_URL}/get-all-emergency-alerts`);
                 const result = await response.json();
                 if (response.ok && result.data) {
                     setAlerts(result.data);
@@ -82,7 +82,7 @@ function ViewEmergencyAlerts() {
                             <div className="p-6 bg-neutral-50 border-t border-neutral-100 flex flex-col gap-3">
                                 {alert.fileUrl && (
                                     <a 
-                                        href={alert.fileUrl} 
+                                        href={resolveBackendAssetUrl(alert.fileUrl)} 
                                         target="_blank" 
                                         rel="noreferrer"
                                         className="w-full py-2.5 rounded-xl bg-white border border-neutral-200 text-neutral-700 font-bold text-sm flex items-center justify-center gap-2 hover:bg-neutral-100 transition"

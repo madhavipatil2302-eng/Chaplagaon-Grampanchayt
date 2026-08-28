@@ -1,13 +1,13 @@
 
 
-const envBaseUrl = import.meta.env.VITE_BACKEND_URL || import.meta.env.BACKEND_URL
-const BASE_URL = envBaseUrl && !envBaseUrl.includes('5001') ? envBaseUrl : 'http://localhost:8000'
+import { BASE_URL } from './apiConfig'
+
 export const TrackToken = async (token) => {
 
 
     try {
 
-        const response = await fetch(`${BASE_URL}/api/track-complint`, {
+        const response = await fetch(`${BASE_URL}/track-complint`, {
 
             method: "POST",
             headers: {

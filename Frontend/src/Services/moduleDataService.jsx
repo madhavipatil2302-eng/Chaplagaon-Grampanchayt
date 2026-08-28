@@ -109,11 +109,11 @@ async function requestForm(path, formData, method = 'POST') {
 }
 
 export function getPanchayatInfos() {
-  return requestJson('/api/admin/panchayat-info')
+  return requestJson('/admin/panchayat-info')
 }
 
 export function getPublicPanchayatInfo() {
-  return requestJson('/api/panchayat-info/latest')
+  return requestJson('/panchayat-info/latest')
 }
 
 function buildPanchayatFormData(payload) {
@@ -133,47 +133,47 @@ function buildPanchayatFormData(payload) {
 }
 
 export function savePanchayatInfo(payload) {
-  return requestForm('/api/admin/panchayat-info', buildPanchayatFormData(payload))
+  return requestForm('/admin/panchayat-info', buildPanchayatFormData(payload))
 }
 
 export function updatePanchayatInfo(id, payload) {
-  return requestForm(`/api/admin/panchayat-info/${id}`, buildPanchayatFormData(payload), 'PUT')
+  return requestForm(`/admin/panchayat-info/${id}`, buildPanchayatFormData(payload), 'PUT')
 }
 
 export function deletePanchayatInfo(id) {
-  return requestJson(`/api/admin/panchayat-info/${id}`, {
+  return requestJson(`/admin/panchayat-info/${id}`, {
     method: 'DELETE',
   })
 }
 
 export function getVillageStatistics() {
-  return requestJson('/api/admin/village-statistics')
+  return requestJson('/admin/village-statistics')
 }
 
 export function getPublicVillageStatistics() {
-  return requestJson('/api/village-statistics/latest')
+  return requestJson('/village-statistics/latest')
 }
 
 export function saveVillageStatistics(payload) {
-  return requestJson('/api/admin/village-statistics', {
+  return requestJson('/admin/village-statistics', {
     body: JSON.stringify(payload),
     method: 'POST',
   })
 }
 
 export function updateVillageStatistics(id, payload) {
-  return requestJson(`/api/admin/village-statistics/${id}`, {
+  return requestJson(`/admin/village-statistics/${id}`, {
     body: JSON.stringify(payload),
     method: 'PUT',
   })
 }
 
 export function getOngoingProjects() {
-  return requestJson('/api/admin/ongoing-projects')
+  return requestJson('/admin/ongoing-projects')
 }
 
 export function getPublicOngoingProjects() {
-  return requestJson('/api/ongoing-projects')
+  return requestJson('/ongoing-projects')
 }
 
 function buildOngoingProjectFormData(payload) {
@@ -193,25 +193,25 @@ function buildOngoingProjectFormData(payload) {
 }
 
 export function saveOngoingProject(payload) {
-  return requestForm('/api/admin/ongoing-projects', buildOngoingProjectFormData(payload))
+  return requestForm('/admin/ongoing-projects', buildOngoingProjectFormData(payload))
 }
 
 export function updateOngoingProject(id, payload) {
-  return requestForm(`/api/admin/ongoing-projects/${id}`, buildOngoingProjectFormData(payload), 'PUT')
+  return requestForm(`/admin/ongoing-projects/${id}`, buildOngoingProjectFormData(payload), 'PUT')
 }
 
 export function deleteOngoingProject(id) {
-  return requestJson(`/api/admin/ongoing-projects/${id}`, {
+  return requestJson(`/admin/ongoing-projects/${id}`, {
     method: 'DELETE',
   })
 }
 
 export function getMediaUploads() {
-  return requestJson('/api/admin/media-uploads')
+  return requestJson('/admin/media-uploads')
 }
 
 export function getPublicMediaUploads() {
-  return requestJson('/api/media-uploads')
+  return requestJson('/media-uploads')
 }
 
 export function saveMediaUpload(payload) {
@@ -227,7 +227,7 @@ export function saveMediaUpload(payload) {
     }
   })
 
-  return requestForm('/api/admin/media-uploads', formData)
+  return requestForm('/admin/media-uploads', formData)
 }
 
 export function updateMediaUpload(id, payload) {
@@ -243,39 +243,39 @@ export function updateMediaUpload(id, payload) {
     }
   })
 
-  return requestForm(`/api/admin/media-uploads/${id}`, formData, 'PUT')
+  return requestForm(`/admin/media-uploads/${id}`, formData, 'PUT')
 }
 
 export function deleteMediaUpload(id) {
-  return requestJson(`/api/admin/media-uploads/${id}`, {
+  return requestJson(`/admin/media-uploads/${id}`, {
     method: 'DELETE',
   })
 }
 
 export function getPublicSchemes() {
-  return requestJson('/api/schemes')
+  return requestJson('/schemes')
 }
 
 export function getSchemes() {
-  return requestJson('/api/admin/schemes')
+  return requestJson('/admin/schemes')
 }
 
 export function saveScheme(payload) {
-  return requestJson('/api/admin/schemes', {
+  return requestJson('/admin/schemes', {
     body: JSON.stringify(payload),
     method: 'POST',
   })
 }
 
 export function updateScheme(id, payload) {
-  return requestJson(`/api/admin/schemes/${id}`, {
+  return requestJson(`/admin/schemes/${id}`, {
     body: JSON.stringify(payload),
     method: 'PUT',
   })
 }
 
 export function deleteScheme(id) {
-  return requestJson(`/api/admin/schemes/${id}`, {
+  return requestJson(`/admin/schemes/${id}`, {
     method: 'DELETE',
   })
 }
