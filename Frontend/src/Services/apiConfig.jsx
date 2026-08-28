@@ -12,8 +12,8 @@ export const BASE_URL = getBackendBaseUrl()
 export function buildApiUrl(path = '') {
   if (!path || typeof path !== 'string') return BASE_URL
   if (path.startsWith('http://') || path.startsWith('https://')) return path
-  const cleanPath = path.replace(/^\/?(api\/?)*/, '')
-  return `${BASE_URL}/${cleanPath}`
+  const cleanPath = path.replace(/^\/?(api\/?)*/i, '').replace(/^\/+/, '')
+  return cleanPath ? `${BASE_URL}/${cleanPath}` : BASE_URL
 }
 
 export function resolveBackendAssetUrl(path) {
