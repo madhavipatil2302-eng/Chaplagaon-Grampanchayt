@@ -1,4 +1,4 @@
-import { BASE_URL } from './apiConfig'
+import { BASE_URL, buildApiUrl } from './apiConfig'
 
 function authHeaders() {
   const token = localStorage.getItem('accesstoken')
@@ -12,7 +12,7 @@ function authHeaders() {
 
 export async function getPermissionMatrix() {
   try {
-    const response = await fetch(`${BASE_URL}/admin/permissions`, {
+    const response = await fetch(buildApiUrl('/admin/permissions'), {
       headers: authHeaders(),
     })
     const data = await response.json().catch(() => ({}))
@@ -43,7 +43,7 @@ export async function getPermissionMatrix() {
 
 export async function updatePermissionMatrix(modules) {
   try {
-    const response = await fetch(`${BASE_URL}/admin/permissions`, {
+    const response = await fetch(buildApiUrl('/admin/permissions'), {
       body: JSON.stringify({ modules }),
       headers: {
         'Content-Type': 'application/json',

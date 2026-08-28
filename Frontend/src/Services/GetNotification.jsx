@@ -1,12 +1,12 @@
 
-import { BASE_URL } from './apiConfig'
+import { BASE_URL, buildApiUrl } from './apiConfig'
 
 export const GetAllNotification = async () => {
 
     const token = localStorage.getItem("accesstoken");
     try {
 
-        const Response = await fetch(`${BASE_URL}/get-all-notification-complints`, {
+        const Response = await fetch(buildApiUrl('/get-all-notification-complints'), {
 
             method: "Get",
             headers: {
@@ -31,7 +31,7 @@ export const ViewNotificationById = async (id) => {
     const token = localStorage.getItem("accesstoken");
     try {
 
-        const Response = await fetch(`${BASE_URL}/get-notificationbyId/${id}`, {
+        const Response = await fetch(buildApiUrl(`/get-notificationbyId/${id}`), {
 
             method: "Get",
             headers: {
@@ -57,7 +57,7 @@ export const UpdateStatusNotification = async (id, status) => {
 
     try {
 
-        const response = await fetch(`${BASE_URL}/status/${id}`, {
+        const response = await fetch(buildApiUrl(`/status/${id}`), {
 
             method: "PATCH",
             headers: {

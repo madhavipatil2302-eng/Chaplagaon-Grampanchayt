@@ -1,13 +1,13 @@
 
 
-import { BASE_URL } from './apiConfig'
+import { BASE_URL, buildApiUrl } from './apiConfig'
 
 export const TrackToken = async (token) => {
 
 
     try {
 
-        const response = await fetch(`${BASE_URL}/track-complint`, {
+        const response = await fetch(buildApiUrl('/track-complint'), {
 
             method: "POST",
             headers: {

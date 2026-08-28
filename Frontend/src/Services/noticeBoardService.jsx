@@ -1,4 +1,4 @@
-import { BASE_URL, resolveBackendAssetUrl } from './apiConfig'
+import { BASE_URL, buildApiUrl, resolveBackendAssetUrl } from './apiConfig'
 
 function authHeaders(extraHeaders = {}) {
   const token = localStorage.getItem('accesstoken')
@@ -33,7 +33,7 @@ export function resolveNoticeAssetUrl(path) {
 
 export async function getPublicNotices() {
   try {
-    const response = await fetch(`${BASE_URL}/notices`)
+    const response = await fetch(buildApiUrl('/notices'))
     return parseResponse(response, 'Unable to load notices.')
   } catch {
     return { success: false, data: [], message: 'Unable to connect backend server.' }
@@ -42,7 +42,7 @@ export async function getPublicNotices() {
 
 export async function getAdminNotices() {
   try {
-    const response = await fetch(`${BASE_URL}/admin/notices`, {
+    const response = await fetch(buildApiUrl('/admin/notices'), {
       headers: authHeaders(),
     })
     return parseResponse(response, 'Unable to load notices.')
@@ -61,7 +61,7 @@ export async function createNotice(payload) {
   })
 
   try {
-    const response = await fetch(`${BASE_URL}/admin/notices`, {
+    const response = await fetch(buildApiUrl('/admin/notices'), {
       body: formData,
       headers: authHeaders(),
       method: 'POST',
@@ -74,7 +74,7 @@ export async function createNotice(payload) {
 
 export async function approveNotice(id) {
   try {
-    const response = await fetch(`${BASE_URL}/admin/notices/${id}/approve`, {
+    const response = await fetch(buildApiUrl(`/admin/notices/${id}/approve`), {
       headers: authHeaders({ 'Content-Type': 'application/json' }),
       method: 'PATCH',
     })
@@ -86,7 +86,7 @@ export async function approveNotice(id) {
 
 export async function rejectNotice(id, rejectionReason = '') {
   try {
-    const response = await fetch(`${BASE_URL}/admin/notices/${id}/reject`, {
+    const response = await fetch(buildApiUrl(`/admin/notices/${id}/reject`), {
       body: JSON.stringify({ rejectionReason }),
       headers: authHeaders({ 'Content-Type': 'application/json' }),
       method: 'PATCH',

@@ -4,7 +4,7 @@ import {
     UploadCloud, X, Home, ChevronRight, Navigation, Megaphone, Users, Camera, 
     Clock, FileText, Target, Bell, ShieldCheck, Shield, Send
 } from "lucide-react";
-import { BASE_URL } from "../Services/apiConfig";
+import { BASE_URL, buildApiUrl } from "../Services/apiConfig";
 
 function EmergencyContact() {
     const [formData, setFormData] = useState({
@@ -29,7 +29,7 @@ function EmergencyContact() {
     useEffect(() => {
         const fetchOfficialContacts = async () => {
             try {
-                const response = await fetch(`${BASE_URL}/official-emergency-contacts`);
+                const response = await fetch(buildApiUrl('/official-emergency-contacts'));
                 const result = await response.json();
                 if (response.ok && result.data) {
                     setOfficialContacts(result.data);
@@ -112,7 +112,7 @@ function EmergencyContact() {
                 submitData.append("file", file);
             }
 
-            const response = await fetch(`${BASE_URL}/emergency-contact`, {
+            const response = await fetch(buildApiUrl('/emergency-contact'), {
                 method: "POST",
                 body: submitData,
             });

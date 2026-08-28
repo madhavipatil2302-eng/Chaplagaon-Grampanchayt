@@ -1,4 +1,4 @@
-import { BASE_URL, resolveBackendAssetUrl } from './apiConfig'
+import { BASE_URL, buildApiUrl, resolveBackendAssetUrl } from './apiConfig'
 
 function authHeaders() {
   const token = localStorage.getItem('accesstoken')
@@ -12,7 +12,7 @@ export function resolveProfileImage(path) {
 
 export async function getProfile() {
   try {
-    const response = await fetch(`${BASE_URL}/admin/profile`, {
+    const response = await fetch(buildApiUrl('/admin/profile'), {
       headers: authHeaders(),
     })
     const data = await response.json().catch(() => ({}))
@@ -42,7 +42,7 @@ export async function getProfile() {
 
 export async function updateProfile(profileData) {
   try {
-    const response = await fetch(`${BASE_URL}/admin/profile`, {
+    const response = await fetch(buildApiUrl('/admin/profile'), {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',

@@ -1,4 +1,4 @@
-import { BASE_URL, resolveBackendAssetUrl } from './apiConfig'
+import { BASE_URL, buildApiUrl, resolveBackendAssetUrl } from './apiConfig'
 
 const assetFields = ['mediaFile', 'projectImage', 'panchayatImage', 'profilePhoto', 'attachment']
 const skippedFileFields = [
@@ -69,7 +69,7 @@ async function requestJson(path, options = {}) {
       ...(options.headers || {}),
     }
 
-    const response = await fetch(`${BASE_URL}${path}`, {
+    const response = await fetch(buildApiUrl(path), {
       ...options,
       cache: 'no-store',
       headers: authHeaders(headers),
@@ -89,7 +89,7 @@ async function requestJson(path, options = {}) {
 
 async function requestForm(path, formData, method = 'POST') {
   try {
-    const response = await fetch(`${BASE_URL}${path}`, {
+    const response = await fetch(buildApiUrl(path), {
       body: formData,
       cache: 'no-store',
       headers: authHeaders(),

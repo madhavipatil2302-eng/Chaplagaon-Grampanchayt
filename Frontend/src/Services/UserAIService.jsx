@@ -1,5 +1,5 @@
 
-import { BASE_URL } from './apiConfig'
+import { BASE_URL, buildApiUrl } from './apiConfig'
 
 export const UserAI = async (qun, schemes = [], ongoingProjects = [], emptyVillageStatistics = null) => {
   const controller = new AbortController()
@@ -8,7 +8,7 @@ export const UserAI = async (qun, schemes = [], ongoingProjects = [], emptyVilla
   try {
     const data = { qun, schemes, ongoingProjects, emptyVillageStatistics }
 
-    const response = await fetch(`${BASE_URL}/user-ai`, {
+    const response = await fetch(buildApiUrl('/user-ai'), {
       body: JSON.stringify(data),
       headers: {
         'Content-Type': 'application/json',
@@ -102,7 +102,7 @@ export const analyzeComplaintFile = async (file) => {
   formData.append('file', file)
 
   try {
-    const response = await fetch(`${BASE_URL}/complint-file-ai`, {
+    const response = await fetch(buildApiUrl('/complint-file-ai'), {
       body: formData,
       method: 'POST',
     })
@@ -142,7 +142,7 @@ export const submitComplaintAI = async ({ token, complaintName, complint, descri
   files.forEach((file) => formData.append('files', file))
 
   try {
-    const response = await fetch(`${BASE_URL}/complint-ai`, {
+    const response = await fetch(buildApiUrl('/complint-ai'), {
       body: formData,
       method: 'POST',
     })

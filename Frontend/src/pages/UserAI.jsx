@@ -502,7 +502,7 @@ function UserAI() {
     >
 
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-5">
-        <div className="mb-2 flex border-b border-slate-200">
+        <div className="mb-2 flex overflow-x-auto border-b border-slate-200 whitespace-nowrap">
           <Link
             to="/user-ai"
             className="flex items-center gap-2 border-b-2 border-emerald-600 px-4 py-3 text-sm font-black text-emerald-700 transition"

@@ -1,4 +1,4 @@
-import { BASE_URL } from './apiConfig'
+import { BASE_URL, buildApiUrl } from './apiConfig'
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
@@ -15,7 +15,7 @@ export async function verifyAdminEmail(email) {
   }
 
   try {
-    const response = await fetch(`${BASE_URL}/admin/verify-email`, {
+    const response = await fetch(buildApiUrl('/admin/verify-email'), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -63,7 +63,7 @@ export async function adminLogin(email, password) {
   }
 
   try {
-    const response = await fetch(`${BASE_URL}/admin/login`, {
+    const response = await fetch(buildApiUrl('/admin/login'), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

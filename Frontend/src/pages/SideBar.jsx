@@ -22,6 +22,7 @@ import {
   User,
   Users,
   AlertTriangle,
+  X,
 } from 'lucide-react'
 import Footer from './Footer'
 import { getPermissionMatrix } from '../Services/permissionService'
@@ -189,8 +190,16 @@ function SideBar() {
 
   const sidebar = (
     <aside className="flex h-screen w-80 shrink-0 flex-col overflow-hidden border-r border-neutral-200 bg-white">
-      <div className="bg-gradient-to-br from-emerald-950 via-green-900 to-emerald-700 px-7 py-7">
+      <div className="flex items-center justify-between bg-gradient-to-br from-emerald-950 via-green-900 to-emerald-700 px-6 py-6">
         <LogoBlock />
+        <button
+          className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white/10 text-white transition hover:bg-white/20 lg:hidden"
+          onClick={() => setMobileOpen(false)}
+          title="Close Sidebar"
+          type="button"
+        >
+          <X size={22} />
+        </button>
       </div>
 
       <nav className="min-h-0 flex-1 space-y-2 overflow-y-auto px-4 py-6">
@@ -219,31 +228,46 @@ function SideBar() {
     </aside>
   )
 
+  const mobileBottomTabs = [
+    { icon: Home, label: 'Home', path: '/' },
+    { icon: Bot, label: 'AI Help', path: '/user-ai' },
+    { icon: Bell, label: 'Notices', path: '/notice-board' },
+    { icon: Megaphone, label: 'Complaints', path: '/complaints' },
+    { icon: ShieldCheck, label: 'Schemes', path: '/schemes' },
+    { icon: BriefcaseBusiness, label: 'Projects', path: '/get-allongoingprojects' },
+    { icon: AlertTriangle, label: 'Emergency', path: '/emergency-contact' },
+    isLoggedIn
+      ? { icon: User, label: 'Profile', path: '/profile' }
+      : { icon: LogOut, label: 'Login', path: '/login/admin' },
+  ]
+
   return (
     <div className="h-dvh w-full overflow-hidden bg-[#eef3ef] text-neutral-950">
       <div className="h-dvh w-full overflow-hidden bg-white">
         <div className="fixed inset-y-0 left-0 z-40 hidden lg:block">{sidebar}</div>
 
         {mobileOpen && (
-          <div className="fixed inset-0 z-40 bg-black/35 lg:hidden" onClick={() => setMobileOpen(false)}>
-            <div className="h-full" onClick={(event) => event.stopPropagation()}>
+          <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs transition-opacity lg:hidden" onClick={() => setMobileOpen(false)}>
+            <div className="h-full w-[82vw] max-w-[310px] shadow-2xl" onClick={(event) => event.stopPropagation()}>
               {sidebar}
             </div>
           </div>
         )}
 
         <main className="h-dvh min-w-0 overflow-hidden bg-[#f7faf8] lg:pl-80">
-          <header className="fixed left-0 right-0 top-0 z-30 flex h-24 items-center justify-between border-b border-neutral-200 bg-white px-4 shadow-md shadow-neutral-900/5 sm:px-8 lg:left-80">
-            <div className="flex min-w-0 items-center gap-5">
+          <header className="fixed left-0 right-0 top-0 z-30 flex h-16 sm:h-24 items-center justify-between border-b border-neutral-200 bg-white px-3 sm:px-8 shadow-md shadow-neutral-900/5 lg:left-80">
+            <div className="flex min-w-0 items-center gap-2 sm:gap-5">
               <button
-                className="grid h-11 w-11 place-items-center rounded-lg text-neutral-900 hover:bg-neutral-100"
+                className="grid h-10 w-10 sm:h-11 sm:w-11 shrink-0 place-items-center rounded-lg text-neutral-900 hover:bg-neutral-100"
                 onClick={() => setMobileOpen(true)}
                 type="button"
+                aria-label="Open navigation menu"
               >
-                <Menu size={28} />
+                <Menu size={24} className="sm:hidden" />
+                <Menu size={28} className="hidden sm:block" />
               </button>
               <div className="min-w-0">
-                <h1 className="truncate text-2xl font-black text-emerald-950 sm:text-3xl">{title}</h1>
+                <h1 className="truncate text-base font-black text-emerald-950 sm:text-2xl lg:text-3xl max-w-[140px] xs:max-w-[200px] sm:max-w-none">{title}</h1>
                 <p className="mt-1 hidden items-center gap-3 text-sm font-bold text-emerald-800 sm:flex">
                   <span className="text-xl text-orange-500">Flag</span>
                   Clean village, beautiful village, prosperous village
@@ -251,9 +275,9 @@ function SideBar() {
               </div>
             </div>
 
-            <div className="flex items-center gap-3 sm:gap-5">
+            <div className="flex items-center gap-2 sm:gap-4 shrink-0">
               <select
-                className="h-11 rounded-xl border border-neutral-200 bg-white px-3 text-sm font-bold text-emerald-950 shadow-sm outline-none transition focus:border-emerald-700 focus:ring-4 focus:ring-emerald-100"
+                className="h-9 sm:h-11 rounded-xl border border-neutral-200 bg-white px-2 sm:px-3 text-xs sm:text-sm font-bold text-emerald-950 shadow-sm outline-none transition focus:border-emerald-700 focus:ring-4 focus:ring-emerald-100"
                 data-no-translate="true"
                 onChange={(event) => i18n.changeLanguage(event.target.value)}
                 value={i18n.language}
@@ -265,58 +289,68 @@ function SideBar() {
 
               <div className="relative">
                 <button 
-                  className="relative hidden text-2xl text-neutral-900 transition hover:text-emerald-700 sm:block" 
+                  className="relative grid h-9 w-9 sm:h-11 sm:w-11 shrink-0 place-items-center rounded-full text-neutral-900 transition hover:bg-neutral-100 hover:text-emerald-700" 
                   onClick={() => setIsNotificationOpen(!isNotificationOpen)}
+                  title="Notifications"
                   type="button"
                 >
-                  <Bell size={24} />
-                  <span className="absolute -right-2 -top-2 grid h-5 w-5 place-items-center rounded-full bg-red-600 text-xs font-black text-white shadow-sm">
+                  <Bell size={20} className="sm:hidden" />
+                  <Bell size={24} className="hidden sm:block" />
+                  <span className="absolute -right-0.5 -top-0.5 grid h-4 w-4 sm:h-5 sm:w-5 place-items-center rounded-full bg-red-600 text-[10px] sm:text-xs font-black text-white shadow-sm">
                     3
                   </span>
                 </button>
 
                 {isNotificationOpen && (
-                  <div className="absolute right-0 mt-4 w-80 sm:w-96 rounded-2xl border border-neutral-200 bg-white p-4 shadow-2xl z-50 origin-top-right">
-                    <div className="mb-3 flex items-center justify-between border-b border-neutral-100 pb-3">
-                      <h3 className="text-base font-black text-emerald-950">Notifications</h3>
-                      <button 
-                        className="text-xs font-bold text-emerald-600 transition hover:text-emerald-800"
-                        onClick={() => setIsNotificationOpen(false)}
-                        type="button"
-                      >
-                        Close
-                      </button>
+                  <>
+                    <div 
+                      className="fixed inset-0 z-40 bg-black/20 backdrop-blur-xs sm:bg-transparent" 
+                      onClick={() => setIsNotificationOpen(false)} 
+                    />
+                    <div className="fixed inset-x-3 top-18 z-50 max-h-[80vh] overflow-y-auto rounded-2xl border border-neutral-200 bg-white p-4 shadow-2xl sm:absolute sm:right-0 sm:top-auto sm:inset-x-auto sm:mt-4 sm:w-96">
+                      <div className="mb-3 flex items-center justify-between border-b border-neutral-100 pb-3">
+                        <h3 className="text-base font-black text-emerald-950">Notifications</h3>
+                        <button 
+                          className="rounded-lg bg-neutral-100 px-2.5 py-1 text-xs font-bold text-neutral-600 transition hover:bg-neutral-200 hover:text-neutral-900"
+                          onClick={() => setIsNotificationOpen(false)}
+                          type="button"
+                        >
+                          Close
+                        </button>
+                      </div>
+                      <NotificationList onNotificationClick={() => {
+                        setIsNotificationOpen(false);
+                      }} />
                     </div>
-                    <NotificationList onNotificationClick={() => {
-                      setIsNotificationOpen(false);
-                    }} />
-                  </div>
+                  </>
                 )}
               </div>
 
               {isLoggedIn && (
                 <>
                   <Link
-                    className="grid h-11 w-11 place-items-center rounded-full bg-emerald-100 text-emerald-900 ring-1 ring-emerald-200 transition hover:bg-emerald-800 hover:text-white"
+                    className="grid h-9 w-9 sm:h-11 sm:w-11 shrink-0 place-items-center rounded-full bg-emerald-100 text-emerald-900 ring-1 ring-emerald-200 transition hover:bg-emerald-800 hover:text-white"
                     title="Profile"
                     to="/profile"
                   >
-                    <User size={22} />
+                    <User size={18} className="sm:hidden" />
+                    <User size={22} className="hidden sm:block" />
                   </Link>
                   <button
-                    className="grid h-11 w-11 place-items-center rounded-full bg-red-50 text-red-700 ring-1 ring-red-100 transition hover:bg-red-600 hover:text-white"
+                    className="grid h-9 w-9 sm:h-11 sm:w-11 shrink-0 place-items-center rounded-full bg-red-50 text-red-700 ring-1 ring-red-100 transition hover:bg-red-600 hover:text-white"
                     onClick={() => setLogoutDialogOpen(true)}
                     title="Logout"
                     type="button"
                   >
-                    <LogOut size={22} />
+                    <LogOut size={18} className="sm:hidden" />
+                    <LogOut size={22} className="hidden sm:block" />
                   </button>
                 </>
               )}
 
-              {!isLoggedIn && (
+              {!isLoggedIn && !isLoginPage && (
                 <Link
-                  className="rounded-xl bg-emerald-800 px-5 py-3 text-sm font-black text-white shadow-sm transition hover:bg-emerald-900"
+                  className="rounded-xl bg-emerald-800 px-3 py-2 text-xs sm:px-5 sm:py-2.5 sm:text-sm font-black text-white shadow-sm transition hover:bg-emerald-900 shrink-0"
                   to="/login/admin"
                 >
                   Login
@@ -352,14 +386,14 @@ function SideBar() {
             </div>
           )}
 
-          <div className="fixed inset-x-0 bottom-0 top-24 flex flex-col overflow-y-auto p-4 pb-28 sm:p-8 lg:left-80 lg:pb-8">
+          <div className="fixed inset-x-0 bottom-0 top-16 sm:top-24 flex flex-col overflow-y-auto p-3 pb-24 sm:p-8 lg:left-80 lg:pb-8">
             <section
               className={
                 isLoginPage
                   ? 'min-h-[calc(100vh-10rem)] text-left'
                   : isHomePage
                     ? 'rounded-none border-0 bg-transparent p-0 text-left shadow-none'
-                    : 'rounded-2xl border border-neutral-200 bg-white p-8 text-left shadow-md shadow-neutral-900/5'
+                    : 'rounded-2xl border border-neutral-200 bg-white p-4 sm:p-8 text-left shadow-md shadow-neutral-900/5'
               }
             >
               <Outlet />
@@ -370,30 +404,28 @@ function SideBar() {
             </div>
           </div>
 
-          <section className="fixed inset-x-3 bottom-3 z-30 lg:hidden">
-            <div className="flex items-center gap-3 overflow-x-auto rounded-3xl bg-gradient-to-r from-emerald-950 via-green-900 to-emerald-800 p-3 text-white shadow-2xl shadow-emerald-950/30">
-              <LogoBlock compact />
-              {visibleNavItems.slice(0, 8).map((item) => {
+          <section className="fixed inset-x-2 bottom-2 z-30 lg:hidden">
+            <div className="flex items-center gap-1 overflow-x-auto rounded-2xl bg-gradient-to-r from-emerald-950 via-green-900 to-emerald-950 p-1.5 text-white shadow-2xl shadow-emerald-950/40 ring-1 ring-white/10 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+              {mobileBottomTabs.map((item) => {
                 const Icon = item.icon
                 return (
                   <NavLink
                     className={({ isActive }) =>
-                      `grid min-w-20 place-items-center gap-1 rounded-xl px-3 py-2 text-xs font-bold ${isActive ? 'bg-white text-emerald-900 shadow-lg' : 'text-white/95 hover:bg-white/10'
+                      `flex min-w-[64px] shrink-0 flex-col items-center justify-center gap-1 rounded-xl px-2 py-1.5 text-[10px] font-bold transition ${
+                        isActive
+                          ? 'bg-white text-emerald-950 shadow-md font-black'
+                          : 'text-white/85 hover:bg-white/10 hover:text-white'
                       }`
                     }
                     end={item.path === '/'}
                     key={item.path}
                     to={item.path}
                   >
-                    <Icon size={22} />
-                    <span>{item.label}</span>
+                    <Icon size={18} />
+                    <span className="truncate max-w-[62px]">{item.label}</span>
                   </NavLink>
                 )
               })}
-              <div className="ml-auto hidden h-12 w-48 items-center rounded-lg bg-white px-4 text-neutral-400 md:flex">
-                Search...
-                <span className="ml-auto text-xl">⌕</span>
-              </div>
             </div>
           </section>
         </main>

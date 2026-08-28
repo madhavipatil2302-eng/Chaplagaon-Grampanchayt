@@ -1,4 +1,4 @@
-import { BASE_URL, resolveBackendAssetUrl } from './apiConfig'
+import { BASE_URL, buildApiUrl, resolveBackendAssetUrl } from './apiConfig'
 
 export { getPermissionMatrix, updatePermissionMatrix } from './permissionService'
 export {
@@ -34,7 +34,7 @@ export function resolveAssetUrl(path) {
 
 export async function getAllRoleManagements() {
   try {
-    const response = await fetch(`${BASE_URL}/get-all-role-managements`)
+    const response = await fetch(buildApiUrl('/get-all-role-managements'))
     const data = await response.json().catch(() => ({}))
 
     if (!response.ok || data?.success === false) {

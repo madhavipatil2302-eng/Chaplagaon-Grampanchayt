@@ -1,10 +1,10 @@
-import { BASE_URL } from './apiConfig'
+import { BASE_URL, buildApiUrl } from './apiConfig'
 
 export const ManageRole = async (roleData) => {
   try {
     const token = localStorage.getItem('accesstoken');
 
-    const response = await fetch(`${BASE_URL}/admin/manage-role`, {
+    const response = await fetch(buildApiUrl('/admin/manage-role'), {
       method: 'POST',
       headers: token
         ? {

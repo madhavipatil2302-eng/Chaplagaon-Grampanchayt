@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Building2, Phone, Mail, CheckCircle, Loader2, Save, UploadCloud } from "lucide-react";
-import { BASE_URL } from "../Services/apiConfig";
+import { BASE_URL, buildApiUrl } from "../Services/apiConfig";
 
 function AddOfficialEmergencyContact() {
     const [formData, setFormData] = useState({
@@ -40,7 +40,7 @@ function AddOfficialEmergencyContact() {
                 submitData.append("file", file);
             }
 
-            const response = await fetch(`${BASE_URL}/official-emergency-contact`, {
+            const response = await fetch(buildApiUrl('/official-emergency-contact'), {
                 method: "POST",
                 body: submitData,
             });
