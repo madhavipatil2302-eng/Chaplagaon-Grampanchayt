@@ -12,8 +12,18 @@ export const BASE_URL = getBackendBaseUrl()
 export function buildApiUrl(path = '') {
   if (!path || typeof path !== 'string') return BASE_URL
   if (path.startsWith('http://') || path.startsWith('https://')) return path
-  const cleanPath = path.replace(/^\/?(api\/?)*/i, '').replace(/^\/+/, '')
-  return cleanPath ? `${BASE_URL}/${cleanPath}` : BASE_URL
+  
+  // Normalize path: remove leading slashes
+  let normalizedPath = path.startsWith('/') ? path.substring(1) : path
+  
+  // If path starts with api/, remove it to avoid duplication
+  if (normalizedPath.toLowerCase().startsWith('api/')) {
+    normalizedPath = normalizedPath.substring(4)
+  }
+  
+  // Build the full URL, ensuring BASE_URL ends without slash and path starts without slash
+  const baseWithoutTrailingSlash = BASE_URL.replace(/\/+$/, '')
+  return normalizedPath ? `${baseWithoutTrailingSlash}/${normalizedPath}` : baseWithoutTrailingSlash
 }
 
 export function resolveBackendAssetUrl(path) {
