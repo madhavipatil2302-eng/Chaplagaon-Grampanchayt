@@ -1,35 +1,38 @@
 import { EmergencyContactModel } from "../Shema/EmergencyContactModel.js";
 import { OfficialEmergencyContactModel } from "../Shema/OfficialEmergencyContactModel.js";
 import Transpoter from "../EmailSetup/Email.js";
+import { getUploadedFileUrl } from "../Uploadfile/fileupload.js";
 
 export const GetEmergencyContact = async (req, res) => {
 
     try {
 
-        const { emrgencycontact, contact, name, latitude, longitude, email, officialEmail } = req.body;
+        const emergencyType = req.body.emrgencycontact ?? req.body.emergencyContact ?? req.body.emergencycontact ?? "";
+        const contactNumber = req.body.contact ?? req.body.phone ?? req.body.mobileNumber ?? "";
+        const personName = req.body.name ?? "";
+        const latitude = req.body.latitude ?? "";
+        const longitude = req.body.longitude ?? "";
+        const email = req.body.email ?? "";
+        const officialEmail = req.body.officialEmail ?? req.body.official_email ?? "";
 
-        if (!emrgencycontact || !contact || !name || !latitude || !longitude || !email) {
-
-
-
-
+        if (!emergencyType || !contactNumber || !personName || !latitude || !longitude || !email) {
             return res.status(400).json({
-
                 message: "All fields are required"
             });
-
-
         }
 
         let fileUrl = "";
         if (req.file) {
-            fileUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
+            fileUrl = await getUploadedFileUrl(req.file);
+            if (fileUrl && !/^https?:\/\//i.test(fileUrl)) {
+                fileUrl = `${req.protocol}://${req.get("host")}${fileUrl}`;
+            }
         }
 
         const Response = await EmergencyContactModel.create({
-            emrgencycontact: emrgencycontact,
-            contact: contact,
-            name: name,
+            emrgencycontact: emergencyType,
+            contact: contactNumber,
+            name: personName,
             latitude: latitude,
             longitude: longitude,
             fileUrl: fileUrl,
@@ -53,7 +56,7 @@ export const GetEmergencyContact = async (req, res) => {
                     toEmails = [email, ...officialEmails].join(',');
                 }
 
-                let emailText = `EMERGENCY ALERT!\n\nName: ${name}\nContact: ${contact}\nEmergency Contact Provided: ${emrgencycontact}\n\nLive Location: https://www.google.com/maps?q=${latitude},${longitude}\n\nPlease take immediate action.`;
+                let emailText = `EMERGENCY ALERT!\n\nName: ${personName}\nContact: ${contactNumber}\nEmergency Contact Provided: ${emergencyType}\n\nLive Location: https://www.google.com/maps?q=${latitude},${longitude}\n\nPlease take immediate action.`;
                 
                 if (fileUrl) {
                     emailText += `\n\nAttached Evidence: ${fileUrl}`;
@@ -87,7 +90,10 @@ export const GetEmergencyContact = async (req, res) => {
 
 export const AddOfficialEmergencyContact = async (req, res) => {
     try {
-        const { serviceType, name, contactNumber, email } = req.body;
+        const serviceType = req.body.serviceType ?? req.body.service_type ?? "";
+        const name = req.body.name ?? "";
+        const contactNumber = req.body.contactNumber ?? req.body.contact_number ?? req.body.phone ?? "";
+        const email = req.body.email ?? "";
 
         if (!serviceType || !name || !contactNumber || !email) {
             return res.status(400).json({ message: "All fields are required" });
@@ -95,7 +101,10 @@ export const AddOfficialEmergencyContact = async (req, res) => {
 
         let image = "";
         if (req.file) {
-            image = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
+            image = await getUploadedFileUrl(req.file);
+            if (image && !/^https?:\/\//i.test(image)) {
+                image = `${req.protocol}://${req.get("host")}${image}`;
+            }
         }
 
         const newContact = await OfficialEmergencyContactModel.create({

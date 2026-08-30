@@ -3,6 +3,7 @@ import OngoingProjectModel from "../Shema/ongoingProjectSchema.js";
 import PanchayatInfoModel from "../Shema/panchayatInfoSchema.js";
 import SchemeModel from "../Shema/schemeSchema.js";
 import VillageStatisticsModel from "../Shema/villageStatisticsSchema.js";
+import { getUploadedFileUrl, generatePresignedUrlFromString } from "../Uploadfile/fileupload.js";
 
 function asNumber(value) {
   if (value === "" || value === null || value === undefined) {
@@ -16,15 +17,24 @@ function asDate(value) {
   return value ? value : undefined;
 }
 
-function filePath(file) {
-  return file ? `/uploads/${file.filename}` : "";
+async function filePath(file) {
+  return await getUploadedFileUrl(file);
 }
 
-function assetUrl(req, pathValue) {
-  if (!pathValue || /^https?:\/\//i.test(pathValue)) {
-    return pathValue || "";
+async function assetUrl(req, pathValue) {
+  if (!pathValue) {
+    return "";
   }
 
+  // If this is an S3 URL, generate presigned URL
+  if (/^https?:\/\//i.test(pathValue)) {
+    if (/amazonaws\.com|s3\./i.test(pathValue)) {
+      return await generatePresignedUrlFromString(pathValue);
+    }
+    return pathValue;
+  }
+
+  // Handle local/relative URLs
   const normalizedPath = pathValue.startsWith("/") ? pathValue : `/${pathValue}`;
   const publicBaseUrl = process.env.PUBLIC_BACKEND_URL || process.env.BACKEND_URL;
 
@@ -41,24 +51,24 @@ function asPlainObject(data) {
   return data?.toObject ? data.toObject() : data;
 }
 
-function withAssetUrls(req, data, fields) {
+async function withAssetUrls(req, data, fields) {
   if (!data) {
     return data;
   }
 
   const item = asPlainObject(data);
 
-  fields.forEach((field) => {
+  for (const field of fields) {
     if (item[field]) {
-      item[field] = assetUrl(req, item[field]);
+      item[field] = await assetUrl(req, item[field]);
     }
-  });
+  }
 
   return item;
 }
 
-function withAssetUrlsList(req, data, fields) {
-  return data.map((item) => withAssetUrls(req, item, fields));
+async function withAssetUrlsList(req, data, fields) {
+  return Promise.all(data.map(async (item) => withAssetUrls(req, item, fields)));
 }
 
 function userId(req) {
@@ -111,7 +121,7 @@ export const createPanchayatInfo = async (req, res) => {
     };
 
     if (panchayatImage) {
-      payload.panchayatImage = filePath(panchayatImage);
+      payload.panchayatImage = await filePath(panchayatImage);
       payload.panchayatImageName = panchayatImage.originalname;
     }
 
@@ -124,7 +134,7 @@ export const createPanchayatInfo = async (req, res) => {
     return res.status(201).json({
       success: true,
       message: "Panchayat information saved successfully.",
-      data: withAssetUrls(req, data, ["panchayatImage"]),
+      data: await withAssetUrls(req, data, ["panchayatImage"]),
     });
   } catch (error) {
     console.log(error);
@@ -142,7 +152,7 @@ export const getPanchayatInfos = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      data: latestInfo ? [withAssetUrls(req, latestInfo, ["panchayatImage"])] : [],
+      data: latestInfo ? [await withAssetUrls(req, latestInfo, ["panchayatImage"])] : [],
     });
   } catch (error) {
     return res.status(500).json({ success: false, message: "Internal Server Error" });
@@ -156,7 +166,7 @@ export const getPublicPanchayatInfo = async (req, res) => {
       await removeOldPanchayatInfoExcept(data._id);
     }
 
-    return res.status(200).json({ success: true, data: withAssetUrls(req, data, ["panchayatImage"]) });
+    return res.status(200).json({ success: true, data: await withAssetUrls(req, data, ["panchayatImage"]) });
   } catch (error) {
     return res.status(500).json({ success: false, message: "Internal Server Error" });
   }
@@ -174,7 +184,7 @@ export const updatePanchayatInfo = async (req, res) => {
     };
 
     if (panchayatImage) {
-      updateData.panchayatImage = filePath(panchayatImage);
+      updateData.panchayatImage = await filePath(panchayatImage);
       updateData.panchayatImageName = panchayatImage.originalname;
     }
 
@@ -187,7 +197,7 @@ export const updatePanchayatInfo = async (req, res) => {
     return res.status(data ? 200 : 404).json({
       success: Boolean(data),
       message: data ? "Panchayat information updated successfully." : "Panchayat information not found.",
-      data: withAssetUrls(req, data, ["panchayatImage"]),
+      data: await withAssetUrls(req, data, ["panchayatImage"]),
     });
   } catch (error) {
     return res.status(500).json({ success: false, message: "Internal Server Error" });
@@ -310,7 +320,7 @@ export const createOngoingProject = async (req, res) => {
       budgetAmount: asNumber(req.body.budgetAmount),
       sanctionedAmount: asNumber(req.body.sanctionedAmount),
       completionPercent: asNumber(req.body.completionPercent),
-      projectImage: filePath(projectImage),
+      projectImage: await filePath(projectImage),
       projectImageName: projectImage?.originalname || req.body.projectImageName || "",
       createdBy: userId(req),
     });
@@ -318,7 +328,7 @@ export const createOngoingProject = async (req, res) => {
     return res.status(201).json({
       success: true,
       message: "Ongoing project saved successfully.",
-      data: withAssetUrls(req, data, ["projectImage"]),
+      data: await withAssetUrls(req, data, ["projectImage"]),
     });
   } catch (error) {
     console.log(error);
@@ -329,7 +339,7 @@ export const createOngoingProject = async (req, res) => {
 export const getOngoingProjects = async (req, res) => {
   try {
     const data = await OngoingProjectModel.find().sort({ createdAt: -1 });
-    return res.status(200).json({ success: true, data: withAssetUrlsList(req, data, ["projectImage"]) });
+    return res.status(200).json({ success: true, data: await withAssetUrlsList(req, data, ["projectImage"]) });
   } catch (error) {
     return res.status(500).json({ success: false, message: "Internal Server Error" });
   }
@@ -348,7 +358,7 @@ export const updateOngoingProject = async (req, res) => {
     };
 
     if (projectImage) {
-      updateData.projectImage = filePath(projectImage);
+      updateData.projectImage = await filePath(projectImage);
       updateData.projectImageName = projectImage.originalname;
     }
 
@@ -356,7 +366,7 @@ export const updateOngoingProject = async (req, res) => {
     return res.status(data ? 200 : 404).json({
       success: Boolean(data),
       message: data ? "Ongoing project updated successfully." : "Ongoing project not found.",
-      data: withAssetUrls(req, data, ["projectImage"]),
+      data: await withAssetUrls(req, data, ["projectImage"]),
     });
   } catch (error) {
     return res.status(500).json({ success: false, message: "Internal Server Error" });
@@ -381,7 +391,7 @@ export const createMediaUpload = async (req, res) => {
     const data = await MediaUploadModel.create({
       ...req.body,
       mediaDate: asDate(req.body.mediaDate),
-      mediaFile: filePath(mediaFile),
+      mediaFile: await filePath(mediaFile),
       mediaFileName: mediaFile?.originalname || req.body.mediaFileName || "",
       mediaMimeType: mediaFile?.mimetype || "",
       createdBy: userId(req),
@@ -390,7 +400,7 @@ export const createMediaUpload = async (req, res) => {
     return res.status(201).json({
       success: true,
       message: "Media saved successfully.",
-      data: withAssetUrls(req, data, ["mediaFile"]),
+      data: await withAssetUrls(req, data, ["mediaFile"]),
     });
   } catch (error) {
     return res.status(500).json({ success: false, message: "Internal Server Error" });
@@ -400,7 +410,7 @@ export const createMediaUpload = async (req, res) => {
 export const getMediaUploads = async (req, res) => {
   try {
     const data = await MediaUploadModel.find().sort({ createdAt: -1 });
-    return res.status(200).json({ success: true, data: withAssetUrlsList(req, data, ["mediaFile"]) });
+    return res.status(200).json({ success: true, data: await withAssetUrlsList(req, data, ["mediaFile"]) });
   } catch (error) {
     return res.status(500).json({ success: false, message: "Internal Server Error" });
   }
@@ -415,7 +425,7 @@ export const updateMediaUpload = async (req, res) => {
     };
 
     if (mediaFile) {
-      updateData.mediaFile = filePath(mediaFile);
+      updateData.mediaFile = await filePath(mediaFile);
       updateData.mediaFileName = mediaFile.originalname;
       updateData.mediaMimeType = mediaFile.mimetype;
     }
@@ -424,7 +434,7 @@ export const updateMediaUpload = async (req, res) => {
     return res.status(data ? 200 : 404).json({
       success: Boolean(data),
       message: data ? "Media updated successfully." : "Media not found.",
-      data: withAssetUrls(req, data, ["mediaFile"]),
+      data: await withAssetUrls(req, data, ["mediaFile"]),
     });
   } catch (error) {
     return res.status(500).json({ success: false, message: "Internal Server Error" });

@@ -1,4 +1,5 @@
 import NoticeBoardModel from "../Shema/NoticeBoard.js";
+import { getUploadedFileUrl } from "../Uploadfile/fileupload.js";
 
 const creatorRoles = ["ApplicationAdmin", "GramSevak"];
 const approverRoles = ["sarpanch", "UpSarpanch", "DeputySarpanch"];
@@ -7,8 +8,8 @@ function userId(req) {
   return req.user?.id || req.user?._id;
 }
 
-function filePath(file) {
-  return file ? `/uploads/${file.filename}` : "";
+async function filePath(file) {
+  return await getUploadedFileUrl(file);
 }
 
 function hasRole(req, roles) {
@@ -28,7 +29,7 @@ export const createNotice = async (req, res) => {
       category: req.body.category,
       noticeType: req.body.noticeType,
       expiryDate: req.body.expiryDate || undefined,
-      attachment: filePath(attachment),
+      attachment: await filePath(attachment),
       attachmentName: attachment?.originalname || req.body.attachmentName || "",
       approvalStatus: "Pending",
       createdBy: userId(req),

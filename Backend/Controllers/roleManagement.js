@@ -1,4 +1,5 @@
 import LoginModel from "../Shema/loginSchma.js";
+import { getUploadedFileUrl } from "../Uploadfile/fileupload.js";
 
 function parsePriorityProjects(value) {
   if (!value) {
@@ -21,8 +22,8 @@ function parsePriorityProjects(value) {
   }
 }
 
-function filePath(file) {
-  return file ? `/uploads/${file.filename}` : "";
+async function filePath(file) {
+  return await getUploadedFileUrl(file);
 }
 
 export const roleManagement = async (req, res) => {
@@ -66,7 +67,7 @@ export const roleManagement = async (req, res) => {
     const roleDetails = await LoginModel.create({
       fullName,
       role,
-      profilePhoto: filePath(profilePhotoFile),
+      profilePhoto: await filePath(profilePhotoFile),
       mobileNumber,
       alternateMobileNumber,
       email,
@@ -86,7 +87,7 @@ export const roleManagement = async (req, res) => {
       electionYear,
       politicalGroup,
       totalVotes: totalVotes ? Number(totalVotes) : 0,
-      signature: filePath(signatureFile),
+      signature: await filePath(signatureFile),
       priorityProjects: parsePriorityProjects(priorityProjects),
       pass,
       createdBy: req.user?.id,
