@@ -62,7 +62,7 @@ function MediaDialog({ media, onClose }) {
           <div className="bg-slate-100">
             <div className="grid min-h-72 place-items-center text-emerald-900">
               {isImage && mediaUrl ? (
-                <img alt={media.title || media.mediaFileName || 'Gallery media'} className="h-full min-h-72 w-full object-cover" src={mediaUrl} />
+                <img alt={media.title || media.mediaFile || 'Gallery media'} className="h-full min-h-72 w-full object-cover" src={mediaUrl} />
               ) : (
                 <FileText className="h-16 w-16" />
               )}

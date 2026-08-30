@@ -62,10 +62,31 @@ function normalizeAssetUrls(value) {
   return normalized
 }
 
+function appendFormValue(formData, key, value) {
+  if (value === null || value === undefined || value === '') {
+    return
+  }
+
+  if (Array.isArray(value)) {
+    value.forEach((item) => appendFormValue(formData, key, item))
+    return
+  }
+
+  if (typeof value === 'object' && !(value instanceof File) && !(value instanceof Blob)) {
+    formData.append(key, JSON.stringify(value))
+    return
+  }
+
+  formData.append(key, value)
+}
+
 async function requestJson(path, options = {}) {
   try {
+    const hasBody = options.body !== undefined && options.body !== null
+    const isFormDataBody = typeof FormData !== 'undefined' && options.body instanceof FormData
+
     const headers = {
-      ...(options.body ? { 'Content-Type': 'application/json' } : {}),
+      ...(hasBody && !isFormDataBody ? { 'Content-Type': 'application/json' } : {}),
       ...(options.headers || {}),
     }
 
@@ -124,9 +145,7 @@ function buildPanchayatFormData(payload) {
       return
     }
 
-    if (value !== null && value !== undefined) {
-      formData.append(key, value)
-    }
+    appendFormValue(formData, key, value)
   })
 
   return formData
@@ -184,9 +203,7 @@ function buildOngoingProjectFormData(payload) {
       return
     }
 
-    if (value !== null && value !== undefined) {
-      formData.append(key, value)
-    }
+    appendFormValue(formData, key, value)
   })
 
   return formData
@@ -222,9 +239,7 @@ export function saveMediaUpload(payload) {
       return
     }
 
-    if (value !== null && value !== undefined) {
-      formData.append(key, value)
-    }
+    appendFormValue(formData, key, value)
   })
 
   return requestForm('/admin/media-uploads', formData)
@@ -238,9 +253,7 @@ export function updateMediaUpload(id, payload) {
       return
     }
 
-    if (value !== null && value !== undefined) {
-      formData.append(key, value)
-    }
+    appendFormValue(formData, key, value)
   })
 
   return requestForm(`/admin/media-uploads/${id}`, formData, 'PUT')
