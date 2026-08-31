@@ -167,7 +167,8 @@ const OllamaComplint = async (req, res) => {
 
         const response = await ollama.chat({
 
-            model: process.env.OLLAMA_MODEL || "llama3.2:3b",
+            model: process.env.OLLAMA_MODEL || "qwen3:0.6b",
+            think: false,
             messages: [
                 {
                     role: "user",

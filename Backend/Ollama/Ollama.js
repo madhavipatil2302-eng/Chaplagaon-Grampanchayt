@@ -88,8 +88,9 @@ function isValidAnswer(answer) {
 
 async function generateOllamaAnswer(prompt) {
     const response = await ollama.chat({
-        model: process.env.OLLAMA_MODEL || "llama3.2:3b",
+        model: process.env.OLLAMA_MODEL || "qwen3:0.6b",
         keep_alive: "30m",
+        think: false,
         messages: [{ role: "user", content: prompt }],
         options: {
             temperature: Number(process.env.OLLAMA_TEMPERATURE || 0.1),
@@ -100,7 +101,7 @@ async function generateOllamaAnswer(prompt) {
         },
     });
 
-    const answer = response?.message?.content || "";
+    const answer = response?.message?.content || response?.message?.thinking || "";
 
     if (!isValidAnswer(answer)) {
         throw new Error("AI returned an incomplete answer.");
